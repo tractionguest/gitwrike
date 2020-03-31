@@ -16,10 +16,10 @@ end
 
 # require "mixlib/cli"
 require 'facets/string/snakecase'
-require './lib/wrike_commands.rb'
+require_relative './lib/wrike_commands.rb'
 
 settings = CLI.new do
-  option :config_file, short: :c, description: 'Config file', default: './config.json', cast: File
+  option :config_file, short: :c, description: 'Config file', default: File.expand_path("~/.gitwrike/config.json"), cast: File
   option :from_permalink, short: :p,	description: 'Permalink URL or shortcode', cast: lambda { |x| x.gsub(/[^0-9]/, '').to_i }
   option :from_title, short: :t, description: 'More'
   # argument :input,	:description => 'Ticket permalink'

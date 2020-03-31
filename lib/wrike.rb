@@ -33,14 +33,11 @@ class Wrike
   end
 
   def create_ticket(folder_id, title)
-    osjs(
-      self.class.post("/folders/#{folder_id}/tasks", options.merge({ body: { title: title, follow: true  } }))
-    ).data&.first
-    # title=Test task&follow=true
+    osjs(self.class.post("/folders/#{folder_id}/tasks", options.merge({ body: { title: title, follow: true  } })))[:data].first
   end
 
   def ticket(id)
-    osjs(self.class.get("/tasks?permalink=#{wrike_permalink(id)}", options.merge(query: { fields: "[space]" }))).data&.first
+    osjs(self.class.get("/tasks?permalink=#{wrike_permalink(id)}", options))[:data].first
   end
 
   private
@@ -50,6 +47,6 @@ class Wrike
   end
 
   def osjs(response)
-    OpenStruct.new(JSON.parse(response.body, symbolize_names: true))
+    JSON.parse(response.body, symbolize_names: true)
   end
 end

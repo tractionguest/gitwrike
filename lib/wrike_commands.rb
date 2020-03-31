@@ -1,6 +1,6 @@
 require 'facets/string/snakecase'
 require 'facets/string/squish'
-require './lib/wrike.rb'
+require_relative 'wrike.rb'
 
 class WrikeCommands
   def initialize(config_file)
@@ -8,7 +8,8 @@ class WrikeCommands
   end
 
   def cmd_from_permalink(permalink)
-    create_branch(permalink, sdk.ticket(permalink).title)
+    byebug
+    create_branch(permalink, sdk.ticket(permalink)[:title])
   end
 
   def cmd_from_title(title)
