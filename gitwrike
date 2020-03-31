@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'bundler/inline'
+
+gemfile do
+  source 'https://rubygems.org'
+  gem 'colorize'
+  gem 'git'
+  gem 'json'
+  gem 'awesome_print'
+  gem 'httparty'
+  gem 'byebug'
+  gem 'cli'
+  gem "facets", require: false
+end
+
+# require "mixlib/cli"
+require 'facets/string/snakecase'
+require './lib/wrike_commands.rb'
+
+settings = CLI.new do
+  option :config_file, short: :c, description: 'Config file', default: './config.json', cast: File
+  option :from_permalink, short: :p,	description: 'Permalink URL or shortcode', cast: lambda { |x| x.gsub(/[^0-9]/, '').to_i }
+  option :from_title, short: :t, description: 'More'
+  # argument :input,	:description => 'Ticket permalink'
+end.parse! do |settings|
+  fail "Can only create from permalink XOR from title" if settings.from_permalink && settings.from_title
+end
+
+@cmds = WrikeCommands.new(settings.config_file)
+
+@cmds.cmd_from_permalink(settings.from_permalink) if settings.from_permalink
+@cmds.cmd_from_title(settings.from_title) if settings.from_title
